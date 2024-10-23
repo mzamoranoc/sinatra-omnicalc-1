@@ -1,4 +1,4 @@
 <h1>Monthly Payment Result</h1>
-<p>Your monthly payment is <%= @payment_formatted %>.</p>
-<p>Your interest rate is <%= @apr_formatted %>.</p>
+<p>Your monthly payment is <%= @payment %>.</p>
+<p>Your interest rate is <%= params[:apr] %>%.</p>
 <a href="/payment/new">Calculate another payment</a>

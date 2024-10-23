@@ -60,9 +60,11 @@ get '/payment/results' do
   @payment = (numerator / denominator).round(2) # Round to two decimal places
 
   # Format values for display
-  @payment_formatted = @payment.to_fs(:currency)
-  @apr_formatted = (params[:apr].to_f).to_fs(:percentage, { precision: 4 })
+  #@payment_formatted = @payment.to_fs(:currency)
+  #@apr_formatted = (params[:apr].to_f).to_fs(:percentage, { precision: 4 })
+  @payment_formatted = sprintf("%.2f", @payment)
+  @apr_formatted = sprintf("%.4f%%", params[:apr].to_f)
+
 
   erb :payment_results
 end
-
