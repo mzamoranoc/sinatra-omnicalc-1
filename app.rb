@@ -48,25 +48,20 @@ end
 
 get '/payment/results' do
   # Retrieve and convert parameters
-  annual_rate = params[:apr].to_f / 100
-  monthly_rate = annual_rate / 12
-  years = params[:years].to_i
-  months = years * 12
-  principal = params[:present_value].to_f
+  annual_rate = params[:apr].to_f / 100  # Convert APR to decimal
+  monthly_rate = annual_rate / 12        # Monthly rate
+  years = params[:years].to_i            # Convert years to integer
+  months = years * 12                    # Convert years to months
+  principal = params[:present_value].to_f # Convert principal to float
 
-  # Calculate monthly payment
+  # Calculate monthly payment using the annuity formula
   numerator = monthly_rate * principal
   denominator = 1 - (1 + monthly_rate) ** -months
-
-  if denominator == 0
-    @payment = 0.0
-  else
-    @payment = (numerator / denominator).round(2)  # Round to 2 decimal places
-  end
+  @payment = (numerator / denominator).round(2)
 
   # Format the payment and APR for display
-  @payment_formatted = @payment.to_fs(:currency)
-  @apr_formatted = (params[:apr].to_f).to_fs(:percentage, { precision: 4 })
+  @payment_formatted = format("$%.2f", @payment)
+  @apr_formatted = (params[:apr].to_f).round(4).to_s + "%"
 
   erb :payment_results
 end
