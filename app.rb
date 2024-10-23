@@ -45,9 +45,9 @@ end
 
 # Route to process the payment result
 get '/payment/results' do
-  @apr = params[:apr].to_f / 100 / 12
-  @years = params[:years].to_i * 12
-  @present_value = params[:present_value].to_f
+  @apr = params[:apr].to_f / 100 / 12  # Convert APR to monthly rate
+  @years = params[:years].to_i * 12    # Convert years to months
+  @present_value = params[:present_value].to_f  # Convert principal to float
 
   numerator = @apr * @present_value
   denominator = 1 - (1 + @apr) ** -@years
