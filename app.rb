@@ -2,6 +2,11 @@ require 'sinatra'
 require 'sinatra/reloader' if development?
 
 # Route for Square calculation
+get '/' do
+  erb :square
+end
+
+# Route for Square calculation
 get '/square/new' do
   erb :square
 end
@@ -48,22 +53,15 @@ end
 
 get '/payment/results' do
   # Retrieve and convert parameters
-  annual_rate = params[:apr].to_f / 100  # Convert APR to decimal
-  monthly_rate = annual_rate / 12        # Monthly rate
-  years = params[:years].to_i            # Convert years to integer
-  months = years * 12                    # Convert years to months
-  principal = params[:present_value].to_f # Convert principal to float
+  @apr = params.fetch("apr").to_f
+  r = @apr/1200
+  @years = params.fetch("years").to_f
+  n = @years*12
+  @pv = params.fetch("present_value").to_f
 
-  # Calculate monthly payment using the annuity formula
-  numerator = monthly_rate * principal
-  denominator = 1 - (1 + monthly_rate) ** -months
-  @payment = (numerator / denominator).round(2)
+  numerator = r * @pv
+  denominator = 1 - (1 + r) ** -n
+  @payment = (numerator / denominator)
 
-  # Format the payment and APR for display
-  @payment_formatted = @payment.to_fs(:currency)
-  @apr_formatted = (params[:apr].to_f).to_fs(:percentage, { precision: 4 })
-
-  erb :payment_results
+  erb :payments_results
 end
-
-

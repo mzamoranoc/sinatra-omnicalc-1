@@ -1,4 +1,37 @@
-<h1>Monthly Payment Result</h1>
-<p>Your monthly payment is <%= @payment_formatted %>.</p>
-<p>Your interest rate is <%= @apr_formatted %>.</p>
-<a href="/payment/new">Calculate another payment</a>
+<h1>
+  Payment Results
+</h1>
+
+<dl>
+  <dt>
+    APR
+  </dt>
+  <dd>
+    <%= @apr.to_fs(:percentage, {:precision => 4}) %>
+  </dd>
+
+  <dt>
+    Number of years
+  </dt>
+  <dd>
+    <%= @years.to_i %>
+  </dd>
+
+  <dt>
+    Principal
+  </dt>
+  <dd>
+    <%= @pv.to_fs(:currency) %>
+  </dd>
+
+  <dt>
+    Payment
+  </dt>
+  <dd>
+    <%= @payment.to_fs(:currency) %>
+  </dd>
+</dl>
+
+<a href="/payment/new">
+  Calculate another payment
+</a>
