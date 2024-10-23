@@ -60,24 +60,10 @@ get '/payment/results' do
   @payment = (numerator / denominator).round(2)
 
   # Format the payment and APR for display
-  @payment_formatted = format("$%.2f", @payment)
-  @apr_formatted = (params[:apr].to_f).round(4).to_s + "%"
+  @payment_formatted = @payment.to_fs(:currency)
+  @apr_formatted = (params[:apr].to_f).to_fs(:percentage, { precision: 4 })
 
   erb :payment_results
 end
 
-helpers do
-  def format_currency(amount)
-    # Ensure the amount is a float rounded to two decimal places
-    amount = amount.to_f.round(2)
-    
-    # Split the amount into whole and decimal parts
-    integer_part, decimal_part = sprintf('%.2f', amount).split('.')
-    
-    # Add commas to the integer part
-    integer_with_commas = integer_part.chars.to_a.reverse.each_slice(3).map(&:join).join(',').reverse
-    
-    # Combine the integer part with commas and the decimal part
-    "$#{integer_with_commas}.#{decimal_part}"
-  end
-end
+
