@@ -44,6 +44,8 @@ get '/payment/new' do
 end
 
 # Route to process the payment result
+# app.rb
+
 get '/payment/results' do
   # Retrieve and convert parameters
   annual_rate = params[:apr].to_f / 100
@@ -55,10 +57,32 @@ get '/payment/results' do
   # Calculate monthly payment
   numerator = monthly_rate * principal
   denominator = 1 - (1 + monthly_rate) ** -months
-  @payment = numerator / denominator
 
-  # Round to one decimal place if needed
-  @payment = @payment.round(1)
+  if denominator == 0
+    @payment = 0.0
+  else
+    @payment = numerator / denominator
+  end
+
+  # Round @payment to two decimal places
+  @payment = @payment.round(2)
 
   erb :payment_results
+end
+
+
+helpers do
+  def format_currency(amount)
+    # Ensure the amount is a float rounded to two decimal places
+    amount = amount.to_f.round(2)
+    
+    # Split the amount into whole and decimal parts
+    integer_part, decimal_part = sprintf('%.2f', amount).split('.')
+    
+    # Add commas to the integer part
+    integer_with_commas = integer_part.chars.to_a.reverse.each_slice(3).map(&:join).join(',').reverse
+    
+    # Combine the integer part with commas and the decimal part
+    "$#{integer_with_commas}.#{decimal_part}"
+  end
 end
