@@ -45,26 +45,20 @@ end
 
 # Route to process the payment result
 get '/payment/results' do
-  # Convert APR from string to float and calculate monthly rate
-  @apr = params[:apr].to_f / 100 / 12
+  # Retrieve and convert parameters
+  annual_rate = params[:apr].to_f / 100
+  monthly_rate = annual_rate / 12
+  years = params[:years].to_i
+  months = years * 12
+  principal = params[:present_value].to_f
 
-  # Convert years to months
-  @years = params[:years].to_i * 12
+  # Calculate monthly payment
+  numerator = monthly_rate * principal
+  denominator = 1 - (1 + monthly_rate) ** -months
+  @payment = numerator / denominator
 
-  # Convert present value (principal) to float
-  @present_value = params[:present_value].to_f
-
-  # Calculate monthly payment using the formula
-  numerator = @apr * @present_value
-  denominator = 1 - (1 + @apr) ** -@years
-  @payment = (numerator / denominator).round(2) # Round to two decimal places
-
-  # Format values for display
-  #@payment_formatted = @payment.to_fs(:currency)
-  #@apr_formatted = (params[:apr].to_f).to_fs(:percentage, { precision: 4 })
-  @payment_formatted = sprintf("%.2f", @payment)
-  @apr_formatted = sprintf("%.4f%%", params[:apr].to_f)
-
+  # Round to one decimal place if needed
+  @payment = @payment.round(1)
 
   erb :payment_results
 end
