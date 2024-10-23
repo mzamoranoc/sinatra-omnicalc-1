@@ -61,15 +61,15 @@ get '/payment/results' do
   if denominator == 0
     @payment = 0.0
   else
-    @payment = numerator / denominator
+    @payment = (numerator / denominator).round(2)  # Round to 2 decimal places
   end
 
-  # Round @payment to two decimal places
-  @payment = @payment.round(2)
+  # Format the payment and APR for display
+  @payment_formatted = @payment.to_fs(:currency)
+  @apr_formatted = (params[:apr].to_f).to_fs(:percentage, { precision: 4 })
 
   erb :payment_results
 end
-
 
 helpers do
   def format_currency(amount)
